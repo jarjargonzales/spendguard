@@ -1,1 +1,22 @@
-/.metadata/
+# OS
+.DS_Store
+
+# IDE
+.classpath
+.project
+.settings/
+*.iml
+.idea/
+
+# Java
+target/
+*.class
+
+# Node/React/Angular (si aplica más adelante)
+node_modules/
+dist/
+*.log
+
+# Misc
+*.swp
+.metadata/

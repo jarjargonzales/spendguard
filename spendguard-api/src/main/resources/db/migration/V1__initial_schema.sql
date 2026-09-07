@@ -1,3 +1,5 @@
+CREATE DATABASE spendguard OWNER spendguard;
+
 -- =====================================================
 -- SpendGuard - Esquema Inicial de Base de Datos
 -- PostgreSQL 16

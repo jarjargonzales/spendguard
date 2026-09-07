@@ -7,7 +7,7 @@ spring:
   application:
     name: spendguard-api
   datasource:
-    url: jdbc:postgresql://localhost:5432/spendguard
+    url: jdbc:postgresql://localhost:5433/spendguard
     username: spendguard
     password: spendguard
     driver-class-name: org.postgresql.Driver

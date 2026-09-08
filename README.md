@@ -5,6 +5,8 @@ Sistema de gobernanza de gastos corporativos con flujos de aprobación, control 
 ## Estado
 - Backend en desarrollo (Spring Boot 3.2, Java 21).
 - Esquema de BD en progreso.
+- Entidades JPA creadas.
+- Repositorios (puertos y adaptadores JPA) creados.
 - Frontend pendiente.
 
 ## Ejecución local

@@ -7,6 +7,7 @@ Sistema de gobernanza de gastos corporativos con flujos de aprobación, control 
 - Esquema de BD en progreso.
 - Entidades JPA creadas.
 - Repositorios (puertos y adaptadores JPA) creados.
+- DTOs y mapper creados.
 - Frontend pendiente.
 
 ## Ejecución local
@@ -29,7 +30,7 @@ Sistema de gobernanza de gastos corporativos con flujos de aprobación, control 
    (o deja que Flyway lo haga automáticamente al iniciar la app).
 
 ### Nota sobre múltiples versiones de PostgreSQL
-Si conviven PostgreSQL 9.3 (puerto 5432) y PostgreSQL 16 (puerto 5433), ajusta `application.yml`:
+Si conviven PostgreSQL x.x (puerto 5432) y PostgreSQL 16 (puerto 5433), ajusta `application.yml`:
 
    ```yaml
    spring:

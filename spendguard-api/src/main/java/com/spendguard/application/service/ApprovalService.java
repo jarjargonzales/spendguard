@@ -1,6 +1,7 @@
 package com.spendguard.application.service;
 
 import com.spendguard.application.dto.request.ApprovalDecisionDTO;
+import com.spendguard.application.dto.response.ApprovalResponseDTO;
 import com.spendguard.application.port.ApprovalRepository;
 import com.spendguard.application.port.ExpenseRequestRepository;
 import com.spendguard.domain.entity.Approval;
@@ -40,7 +41,7 @@ public class ApprovalService {
         approval.setDecision(decisionDTO.getDecision().name());
         approval.setComments(decisionDTO.getComments());
         approval.setDecidedAt(new Timestamp(System.currentTimeMillis()));
-        approval.setSequenceOrder(1); // simplificación; en un caso real se calcularía
+        approval.setSequenceOrder(1);
         approval.setVersion("1");
         approval.setCreatedBy(approver.getUserId());
         approval.setUpdatedBy(approver.getUserId());
@@ -53,7 +54,6 @@ public class ApprovalService {
             request.setResolutionDate(new Timestamp(System.currentTimeMillis()));
             request.setUpdatedBy(approver.getUserId());
             requestRepository.save(request);
-            // Actualizar presupuesto
             budgetService.consumeBudget(request);
         } else if (decisionDTO.getDecision() == ApprovalAction.REJECT) {
             request.setStatus(RequestStatus.REJECTED);
@@ -61,11 +61,9 @@ public class ApprovalService {
             request.setUpdatedBy(approver.getUserId());
             requestRepository.save(request);
         } else if (decisionDTO.getDecision() == ApprovalAction.ESCALATE) {
-            // Escalar al siguiente nivel: se marca un nuevo approval con PENDING
-            // y se notifica al superior; simplificación: se deja en UNDER_REVIEW
             Approval escalated = new Approval();
             escalated.setRequest(request);
-            escalated.setApprover(approver); // acá debería ser el superior
+            escalated.setApprover(approver);
             escalated.setDecision("PENDING");
             escalated.setSequenceOrder(2);
             escalated.setVersion("1");
@@ -73,13 +71,37 @@ public class ApprovalService {
             escalated.setUpdatedBy(approver.getUserId());
             escalated.setOwnerId(approver.getUserId());
             approvalRepository.save(escalated);
-            // No cambia el estado
         }
+
         auditService.logEvent(request, approver, decisionDTO.getDecision().name(), request.getStatus().name());
     }
 
     @Transactional(readOnly = true)
-    public List<Approval> getPendingApprovalsForUser(Long userId) {
-        return approvalRepository.findByApprover_UserIdAndDecision(userId, "PENDING");
+    public List<ApprovalResponseDTO> getPendingApprovalsForUser(Long userId) {
+        return approvalRepository.findByApprover_UserIdAndDecision(userId, "PENDING")
+                .stream()
+                .map(this::toDTO)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<ApprovalResponseDTO> getApprovalHistoryForUser(Long userId) {
+        return approvalRepository.findByApprover_UserIdAndDecision(userId, "APPROVED")
+                .stream()
+                .map(this::toDTO)
+                .toList();
+    }
+
+    private ApprovalResponseDTO toDTO(Approval approval) {
+        return new ApprovalResponseDTO(
+                approval.getApprovalId(),
+                approval.getRequest().getRequestId(),
+                approval.getApprover().getUserId(),
+                approval.getApprover().getUsername(),
+                approval.getDecision(),
+                approval.getComments(),
+                approval.getDecidedAt(),
+                approval.getSequenceOrder()
+        );
     }
 }

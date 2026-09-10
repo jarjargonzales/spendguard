@@ -1,4 +1,4 @@
-CREATE DATABASE spendguard OWNER spendguard;
+--CREATE DATABASE spendguard OWNER spendguard;
 
 -- =====================================================
 -- SpendGuard - Esquema Inicial de Base de Datos
@@ -17,63 +17,63 @@ CREATE SEQUENCE seq_budget_consumption START 1;
 
 -- Tabla: departments
 CREATE TABLE departments (
-    department_id numeric(10) DEFAULT nextval('seq_departments'::regclass) PRIMARY KEY,
+    department_id BIGINT DEFAULT nextval('seq_departments'::regclass) PRIMARY KEY,
     name varchar(200) NOT NULL UNIQUE,
     description text,
     monthly_budget numeric(15,2) NOT NULL DEFAULT 0,
     active boolean NOT NULL DEFAULT true,
     version varchar(20) NOT NULL DEFAULT '1',
     created timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    created_by numeric(10) NOT NULL,
+    created_by BIGINT NOT NULL,
     updated timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_by numeric(10) NOT NULL,
-    owner_id numeric(10) NOT NULL
+    updated_by BIGINT NOT NULL,
+    owner_id BIGINT NOT NULL
 );
 
 -- Tabla: users
 CREATE TABLE users (
-    user_id numeric(10) DEFAULT nextval('seq_users'::regclass) PRIMARY KEY,
+    user_id BIGINT DEFAULT nextval('seq_users'::regclass) PRIMARY KEY,
     username varchar(100) NOT NULL UNIQUE,
     email varchar(200) NOT NULL UNIQUE,
     password_hash varchar(255) NOT NULL,
     first_name varchar(100),
     last_name varchar(100),
     role varchar(20) NOT NULL,
-    department_id numeric(10) REFERENCES departments(department_id),
-    manager_id numeric(10) REFERENCES users(user_id),
+    department_id BIGINT REFERENCES departments(department_id),
+    manager_id BIGINT REFERENCES users(user_id),
     active boolean NOT NULL DEFAULT true,
     version varchar(20) NOT NULL DEFAULT '1',
     created timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    created_by numeric(10) NOT NULL,
+    created_by BIGINT NOT NULL,
     updated timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_by numeric(10) NOT NULL,
-    owner_id numeric(10) NOT NULL
+    updated_by BIGINT NOT NULL,
+    owner_id BIGINT NOT NULL
 );
 
 -- Tabla: expense_categories
 CREATE TABLE expense_categories (
-    category_id numeric(10) DEFAULT nextval('seq_expense_categories'::regclass) PRIMARY KEY,
+    category_id BIGINT DEFAULT nextval('seq_expense_categories'::regclass) PRIMARY KEY,
     name varchar(100) NOT NULL UNIQUE,
     description text,
     requires_approval boolean NOT NULL DEFAULT true,
     active boolean NOT NULL DEFAULT true,
     version varchar(20) NOT NULL DEFAULT '1',
     created timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    created_by numeric(10) NOT NULL,
+    created_by BIGINT NOT NULL,
     updated timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_by numeric(10) NOT NULL,
-    owner_id numeric(10) NOT NULL
+    updated_by BIGINT NOT NULL,
+    owner_id BIGINT NOT NULL
 );
 
 -- Tabla: expense_policies
 CREATE TABLE expense_policies (
-    policy_id numeric(10) DEFAULT nextval('seq_expense_policies'::regclass) PRIMARY KEY,
+    policy_id BIGINT DEFAULT nextval('seq_expense_policies'::regclass) PRIMARY KEY,
     name varchar(200) NOT NULL,
     description text,
     min_amount numeric(15,2) NOT NULL DEFAULT 0,
     max_amount numeric(15,2) NOT NULL DEFAULT 999999999,
-    department_id numeric(10) REFERENCES departments(department_id),
-    category_id numeric(10) REFERENCES expense_categories(category_id),
+    department_id BIGINT REFERENCES departments(department_id),
+    category_id BIGINT REFERENCES expense_categories(category_id),
     requires_approval boolean NOT NULL DEFAULT true,
     approval_chain_type varchar(20) NOT NULL DEFAULT 'SEQUENTIAL',
     approver_roles varchar(500) NOT NULL,
@@ -81,18 +81,18 @@ CREATE TABLE expense_policies (
     active boolean NOT NULL DEFAULT true,
     version varchar(20) NOT NULL DEFAULT '1',
     created timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    created_by numeric(10) NOT NULL,
+    created_by BIGINT NOT NULL,
     updated timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_by numeric(10) NOT NULL,
-    owner_id numeric(10) NOT NULL
+    updated_by BIGINT NOT NULL,
+    owner_id BIGINT NOT NULL
 );
 
 -- Tabla: expense_requests
 CREATE TABLE expense_requests (
-    request_id numeric(10) DEFAULT nextval('seq_expense_requests'::regclass) PRIMARY KEY,
-    requester_id numeric(10) NOT NULL REFERENCES users(user_id),
-    department_id numeric(10) NOT NULL REFERENCES departments(department_id),
-    category_id numeric(10) NOT NULL REFERENCES expense_categories(category_id),
+    request_id BIGINT DEFAULT nextval('seq_expense_requests'::regclass) PRIMARY KEY,
+    requester_id BIGINT NOT NULL REFERENCES users(user_id),
+    department_id BIGINT NOT NULL REFERENCES departments(department_id),
+    category_id BIGINT NOT NULL REFERENCES expense_categories(category_id),
     title varchar(200) NOT NULL,
     description text,
     amount numeric(15,2) NOT NULL CHECK (amount > 0),
@@ -103,34 +103,34 @@ CREATE TABLE expense_requests (
     version_opt integer NOT NULL DEFAULT 0,
     version varchar(20) NOT NULL DEFAULT '1',
     created timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    created_by numeric(10) NOT NULL,
+    created_by BIGINT NOT NULL,
     updated timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_by numeric(10) NOT NULL,
-    owner_id numeric(10) NOT NULL
+    updated_by BIGINT NOT NULL,
+    owner_id BIGINT NOT NULL
 );
 
 -- Tabla: approvals
 CREATE TABLE approvals (
-    approval_id numeric(10) DEFAULT nextval('seq_approvals'::regclass) PRIMARY KEY,
-    request_id numeric(10) NOT NULL REFERENCES expense_requests(request_id),
-    approver_id numeric(10) NOT NULL REFERENCES users(user_id),
+    approval_id BIGINT DEFAULT nextval('seq_approvals'::regclass) PRIMARY KEY,
+    request_id BIGINT NOT NULL REFERENCES expense_requests(request_id),
+    approver_id BIGINT NOT NULL REFERENCES users(user_id),
     decision varchar(20) NOT NULL,
     comments text,
     decided_at timestamp,
     sequence_order int NOT NULL,
     version varchar(20) NOT NULL DEFAULT '1',
     created timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    created_by numeric(10) NOT NULL,
+    created_by BIGINT NOT NULL,
     updated timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_by numeric(10) NOT NULL,
-    owner_id numeric(10) NOT NULL
+    updated_by BIGINT NOT NULL,
+    owner_id BIGINT NOT NULL
 );
 
 -- Tabla: audit_log
 CREATE TABLE audit_log (
-    audit_id numeric(10) DEFAULT nextval('seq_audit_log'::regclass) PRIMARY KEY,
-    request_id numeric(10) REFERENCES expense_requests(request_id),
-    user_id numeric(10) REFERENCES users(user_id),
+    audit_id BIGINT DEFAULT nextval('seq_audit_log'::regclass) PRIMARY KEY,
+    request_id BIGINT REFERENCES expense_requests(request_id),
+    user_id BIGINT REFERENCES users(user_id),
     event_type varchar(50) NOT NULL,
     old_status varchar(20),
     new_status varchar(20),
@@ -140,25 +140,25 @@ CREATE TABLE audit_log (
     details text,
     version varchar(20) NOT NULL DEFAULT '1',
     created timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    created_by numeric(10) NOT NULL,
+    created_by BIGINT NOT NULL,
     updated timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_by numeric(10) NOT NULL,
-    owner_id numeric(10) NOT NULL
+    updated_by BIGINT NOT NULL,
+    owner_id BIGINT NOT NULL
 );
 
 -- Tabla: budget_consumption
 CREATE TABLE budget_consumption (
-    consumption_id numeric(10) DEFAULT nextval('seq_budget_consumption'::regclass) PRIMARY KEY,
-    department_id numeric(10) NOT NULL REFERENCES departments(department_id),
+    consumption_id BIGINT DEFAULT nextval('seq_budget_consumption'::regclass) PRIMARY KEY,
+    department_id BIGINT NOT NULL REFERENCES departments(department_id),
     month_year varchar(7) NOT NULL,
     budget_allocated numeric(15,2) NOT NULL,
     budget_consumed numeric(15,2) NOT NULL DEFAULT 0,
     version varchar(20) NOT NULL DEFAULT '1',
     created timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    created_by numeric(10) NOT NULL,
+    created_by BIGINT NOT NULL,
     updated timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_by numeric(10) NOT NULL,
-    owner_id numeric(10) NOT NULL,
+    updated_by BIGINT NOT NULL,
+    owner_id BIGINT NOT NULL,
     CONSTRAINT uk_budget_dept_month UNIQUE (department_id, month_year)
 );
 

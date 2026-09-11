@@ -8,7 +8,12 @@ Sistema de gobernanza de gastos corporativos con flujos de aprobación, control 
 - Entidades JPA creadas.
 - Repositorios (puertos y adaptadores JPA) creados.
 - DTOs y mapper creados.
+- Servicios de negocio implementados (ExpenseRequest, PolicyEngine, Approval, Budget, Audit, Notification).
+- Seguridad JWT configurada (token provider, filtro, user details service).
+- Controladores REST creados (Auth, ExpenseRequest, Approval, Budget, Audit).
+- Aplicación arranca correctamente en local.
 - Frontend pendiente.
+- Tests pendientes.
 
 ## Ejecución local
 1. Configurar PostgreSQL y crear base de datos `spendguard`.
@@ -39,6 +44,11 @@ Si conviven PostgreSQL x.x (puerto 5432) y PostgreSQL 16 (puerto 5433), ajusta `
    ```
 
 Asegúrate de que el puerto configurado coincida con la instancia de PostgreSQL donde se encuentra la base de datos `spendguard`.
+
+## Documentación de la API
+Una vez arrancada la aplicación, la documentación OpenAPI está disponible en:
+- Swagger UI: `http://localhost:8080/api/swagger-ui.html`
+- Actuator: `http://localhost:8080/api/actuator`
 
 
 ## Autor

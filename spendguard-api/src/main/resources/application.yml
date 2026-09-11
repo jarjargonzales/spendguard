@@ -47,3 +47,8 @@ logging:
   level:
     com.spendguard: DEBUG
     org.hibernate.SQL: DEBUG
+
+management:
+  endpoint:
+    health:
+      show-details: always

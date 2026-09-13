@@ -10,6 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/audit")
+@PreAuthorize("hasAnyRole('EMPLOYEE','MANAGER','DIRECTOR','CFO','ADMIN')")
 public class AuditController {
 
     private final AuditService auditService;

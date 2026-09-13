@@ -6,6 +6,7 @@ import com.spendguard.application.port.UserRepository;
 import com.spendguard.application.service.ExpenseRequestService;
 import com.spendguard.domain.entity.User;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/expense-requests")
+@PreAuthorize("hasAnyRole('EMPLOYEE','MANAGER','DIRECTOR','CFO','ADMIN')")
 public class ExpenseRequestController {
 
     private final ExpenseRequestService requestService;

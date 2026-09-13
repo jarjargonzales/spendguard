@@ -2,6 +2,7 @@ package com.spendguard.application.port;
 
 import com.spendguard.domain.entity.Approval;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,4 +12,5 @@ public interface ApprovalRepository {
     List<Approval> findByRequest_RequestId(Long requestId);
     List<Approval> findByApprover_UserIdAndDecision(Long approverId, String decision);
     List<Approval> findByRequest_RequestIdAndDecision(Long requestId, String decision);
+    List<Approval> findByDecisionAndCreatedBefore(String decision, Timestamp threshold);
 }

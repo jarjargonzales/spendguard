@@ -47,4 +47,16 @@ public class BudgetConsumption {
 
     @Column(name = "owner_id", nullable = false)
     private Long ownerId;
+    
+    @PrePersist
+    void onCreate() {
+        Timestamp now = new Timestamp(System.currentTimeMillis());
+        if (created == null) created = now;
+        if (updated == null) updated = now;
+    }
+
+    @PreUpdate
+    void onUpdate() {
+        updated = new Timestamp(System.currentTimeMillis());
+    }
 }

@@ -1,15 +1,17 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [MatCardModule],
   template: `
-    <div style="padding: 24px;">
-      <h1>Dashboard</h1>
-      <p>Bienvenido a SpendGuard</p>
-    </div>
+    <h1>Dashboard</h1>
+    <mat-card>
+      <mat-card-content>
+        <p>Bienvenido a SpendGuard</p>
+      </mat-card-content>
+    </mat-card>
   `
 })
 export class DashboardComponent {}

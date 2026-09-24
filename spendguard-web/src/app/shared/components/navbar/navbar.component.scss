@@ -1,0 +1,23 @@
+.navbar {
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+}
+
+.brand {
+  font-size: 20px;
+  font-weight: 600;
+  margin-right: 32px;
+}
+
+.nav-links a {
+  margin-right: 8px;
+}
+
+.nav-links a.active {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.spacer {
+  flex: 1;
+}

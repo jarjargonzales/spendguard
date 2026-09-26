@@ -1,0 +1,67 @@
+<div class="header">
+  <h1>Mis solicitudes</h1>
+  <button mat-raised-button color="primary" (click)="openCreateDialog()">
+    <mat-icon>add</mat-icon>
+    Nueva solicitud
+  </button>
+</div>
+
+@if (loading()) {
+  <div class="loading">
+    <mat-spinner diameter="40"></mat-spinner>
+  </div>
+} @else {
+  <mat-card>
+    <mat-card-content>
+      @if (requests().length === 0) {
+        <p class="empty">No tienes solicitudes aún. Crea la primera.</p>
+      } @else {
+        <table mat-table [dataSource]="requests()" class="full-width">
+          <ng-container matColumnDef="title">
+            <th mat-header-cell *matHeaderCellDef>Título</th>
+            <td mat-cell *matCellDef="let r">{{ r.title }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="amount">
+            <th mat-header-cell *matHeaderCellDef>Monto</th>
+            <td mat-cell *matCellDef="let r">{{ r.amount | currency:r.currency }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="department">
+            <th mat-header-cell *matHeaderCellDef>Departamento</th>
+            <td mat-cell *matCellDef="let r">{{ r.departmentName }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="category">
+            <th mat-header-cell *matHeaderCellDef>Categoría</th>
+            <td mat-cell *matCellDef="let r">{{ r.categoryName }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef>Estado</th>
+            <td mat-cell *matCellDef="let r">
+              <app-status-badge [status]="r.status"></app-status-badge>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Acciones</th>
+            <td mat-cell *matCellDef="let r">
+              @if (r.status === 'DRAFT') {
+                <button mat-icon-button color="primary" (click)="submit(r.requestId)" title="Enviar">
+                  <mat-icon>send</mat-icon>
+                </button>
+                <button mat-icon-button color="warn" (click)="cancel(r.requestId)" title="Cancelar">
+                  <mat-icon>cancel</mat-icon>
+                </button>
+              }
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      }
+    </mat-card-content>
+  </mat-card>
+}

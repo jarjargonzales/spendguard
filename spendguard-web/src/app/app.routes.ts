@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
 import { LayoutComponent } from './shared/components/layout/layout.component';
+import { roleGuard } from './core/guards/role.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -28,6 +29,11 @@ export const routes: Routes = [
       {
         path: 'reports',
         loadComponent: () => import('./features/reports/budget-report/budget-report.component').then(m => m.BudgetReportComponent)
+      },
+      {
+        path: 'admin',
+        loadComponent: () => import('./features/admin/admin.component').then(m => m.AdminComponent),
+        canActivate: [roleGuard(['ADMIN', 'CFO'])]
       }
     ]
   },

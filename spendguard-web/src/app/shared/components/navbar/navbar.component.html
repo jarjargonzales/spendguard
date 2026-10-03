@@ -6,6 +6,9 @@
     <a mat-button routerLink="/expense-requests" routerLinkActive="active">Solicitudes</a>
     <a mat-button routerLink="/approvals" routerLinkActive="active">Aprobaciones</a>
     <a mat-button routerLink="/reports" routerLinkActive="active">Reportes</a>
+    @if (role === 'ADMIN' || role === 'CFO') {
+      <a mat-button routerLink="/admin" routerLinkActive="active">Administración</a>
+    }
   </nav>
 
   <span class="spacer"></span>

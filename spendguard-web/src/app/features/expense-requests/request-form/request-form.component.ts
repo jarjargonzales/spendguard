@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef, MatDialogModule } from '@angular/material/dialog';
@@ -7,7 +7,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { ExpenseRequestService } from '../../../core/services/expense-request.service'; 
+import { ExpenseRequestService } from '../../../core/services/expense-request.service';
+import { Category, CategoryService } from '../../../core/services/category.service';
+import { Department, DepartmentService } from '../../../core/services/department.service';
 import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
@@ -26,25 +28,19 @@ import { AuthService } from '../../../core/services/auth.service';
   templateUrl: './request-form.component.html',
   styleUrl: './request-form.component.scss'
 })
-export class RequestFormComponent {
+export class RequestFormComponent implements OnInit {
   private fb = inject(FormBuilder);
   private requestService = inject(ExpenseRequestService);
+  private categoryService = inject(CategoryService);
+  private departmentService = inject(DepartmentService);
   private authService = inject(AuthService);
   private dialogRef = inject(MatDialogRef<RequestFormComponent>);
   private snackBar = inject(MatSnackBar);
 
   loading = signal(false);
-
-  // En una versión completa, estos vendrían de endpoints /categories y /departments.
-  // Por ahora hardcodeamos un par de ejemplo:
-  categories = [
-    { id: 1, name: 'Capacitación' },
-    { id: 2, name: 'Viajes' },
-    { id: 3, name: 'Software' }
-  ];
-  departments = [
-    { id: 1, name: 'Administración' }
-  ];
+  categories = signal<Category[]>([]);
+  departments = signal<Department[]>([]);
+  currencies = ['USD', 'PEN', 'EUR'];
 
   form = this.fb.group({
     title: ['', [Validators.required, Validators.minLength(3)]],
@@ -52,8 +48,26 @@ export class RequestFormComponent {
     amount: [0, [Validators.required, Validators.min(0.01)]],
     currency: ['USD', Validators.required],
     categoryId: [null as number | null, Validators.required],
-    departmentId: [1, Validators.required]
+    departmentId: [null as number | null, Validators.required]
   });
+
+  ngOnInit(): void {
+    this.categoryService.getAll().subscribe({
+      next: data => this.categories.set(data),
+      error: err => console.error(err)
+    });
+
+    this.departmentService.getAll().subscribe({
+      next: data => {
+        this.departments.set(data);
+        const deptId = this.authService.getDepartmentId();
+        if (deptId) {
+          this.form.patchValue({ departmentId: deptId });
+        }
+      },
+      error: err => console.error(err)
+    });
+  }
 
   onSubmit(): void {
     if (this.form.invalid) return;

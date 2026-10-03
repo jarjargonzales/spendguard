@@ -3,36 +3,66 @@
 Sistema de gobernanza de gastos corporativos con flujos de aprobación, control de presupuesto y auditoría.
 
 ## Estado
-- Backend en desarrollo (Spring Boot 3.2, Java 21).
-- Esquema de BD en progreso.
-- Entidades JPA creadas.
-- Repositorios (puertos y adaptadores JPA) creados.
-- DTOs y mapper creados.
-- Servicios de negocio implementados (ExpenseRequest, PolicyEngine, Approval, Budget, Audit, Notification).
-- Seguridad JWT configurada (token provider, filtro, user details service).
-- Controladores REST creados (Auth, ExpenseRequest, Approval, Budget, Audit).
+**Backend completado** (Spring Boot 3.2, Java 21).
+
+- Esquema de BD con Flyway (8 tablas, secuencias, índices).
+- Entidades JPA con optimistic locking y lifecycle callbacks.
+- Repositorios (puertos y adaptadores JPA).
+- DTOs y mappers (MapStruct).
+- Servicios de negocio: ExpenseRequest, PolicyEngine, Approval, Budget, Audit, Notification, Category, Department.
+- Seguridad JWT (token provider con departmentId, filtro, user details service, roles).
+- Controladores REST: Auth, ExpenseRequest, Approval, Budget, Audit, Category, Department.
 - Scheduler de recordatorios (48h) y escalación automática (72h).
 - Tests unitarios y de integración: 9 pasando.
 - Documentación OpenAPI/Swagger.
 
-**Pendiente:** frontend Angular.
+**Frontend Angular en desarrollo.**
+
+- Login con JWT y guards por rol.
+- Interceptor JWT.
+- Navbar + layout.
+- Listado de solicitudes + formulario de creación con listas dinámicas.
+- Panel de administración (categorías y departamentos).
+- Vistas placeholder para aprobaciones y reportes.
 
 ## Arquitectura
 
-Arquitectura hexagonal con separación por capas:
+Arquitectura hexagonal en el backend, con separación por capas:
 
 ```
 com.spendguard
 ├── domain/          # Entidades, enums, excepciones
-├── application/     # DTOs, mapper, servicios, puertos
+├── application/     # DTOs, mappers, servicios, puertos
 ├── infrastructure/  # Persistencia JPA, seguridad JWT, scheduler
 └── web/             # Controladores REST
 ```
 
+Frontend Angular con standalone components y Angular Material:
+
+```
+spendguard-web/src/app
+├── core/            # Guards, interceptores, modelos, servicios HTTP
+├── features/        # auth, dashboard, expense-requests, approvals, reports, admin
+└── shared/          # Navbar, layout, componentes reutilizables
+```
+
 ## Ejecución local
+
+### Backend
+
 1. Configurar PostgreSQL y crear base de datos `spendguard`.
 2. Ajustar credenciales en `application.yml`.
 3. `cd spendguard-api && mvn spring-boot:run`
+
+### Frontend
+
+```bash
+cd spendguard-web
+npm install --legacy-peer-deps
+ng serve
+```
+
+Abrir `http://localhost:4200`.
 
 ## Configuración de la base de datos
 
@@ -48,8 +78,8 @@ com.spendguard
    `spendguard-api/src/main/resources/db/migration/V1__initial_schema.sql`
    (o deja que Flyway lo haga automáticamente al iniciar la aplicación).
 
-### Nota sobre múltiples versiones de PostgreSQL
-Si conviven PostgreSQL x.x (puerto 5432) y PostgreSQL 16 (puerto 5433), ajusta `application.yml`:
+### Múltiples versiones de PostgreSQL
+Si conviven PostgreSQL 9.3 (puerto 5432) y PostgreSQL 16 (puerto 5433), ajusta `application.yml`:
 
    ```yaml
    spring:
@@ -79,6 +109,7 @@ Una vez arrancada la aplicación:
 
 ## Stack
 
+**Backend**
 - Java 21, Spring Boot 3.2
 - Spring Security + JWT (JJWT 0.12)
 - Spring Data JPA + Hibernate
@@ -87,6 +118,11 @@ Una vez arrancada la aplicación:
 - JUnit 5, Mockito, H2
 - SpringDoc OpenAPI
 
+**Frontend**
+- Angular 20 (standalone components)
+- Angular Material
+- RxJS
+- TypeScript
 
 ## Autor
-Jar Gonzales – [GitHub](https://github.com/jarjargonzales)
+Jar Gonzales – [Linkedin](https://www.linkedin.com/in/jarjargonzales/)
